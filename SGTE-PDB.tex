@@ -53,7 +53,8 @@ format.
 \begin{tabular}{lll}
 Date       & Revision    &  Notes \\
 2016-09-16 & First draft & Bo Sundman\\
-\today   & Second Draft & Bo Sundman's interpretation of some comments.
+2016-10-10 & Second draft & Bo Sundman's interpretation of some comments\\
+\today     & Update      & some thoughts\\
 \end{tabular}
 
 \vspace{5mm}
@@ -115,13 +116,26 @@ to become a test software for the new format.
 
 {\Large \bf Proposed changes after 2016.10.10}
 \begin{itemize}
-\item Bosse: Moved the description of the $T$ and $P$ dependence to an
-  appendix.
-\item Bosse: Added the D suffix after the table in Appendix F.
-\item Bosse: Define errors messages and warnings.  There should be an
-  error if the same phase occures more than once (not in include
-  files) and also if a parameter is duplicated (what about include
-  files?).  Constituents that are not entered as species is an error.
+\item Bosse: Moved the description of the $T$ and $P$ dependence to
+  Appendix~H
+\item Bosse: Added a comment about the D suffix after the table in
+  Appendix~F.
+\item Bosse: We should define errors messages and warnings.  There
+  should be an error if the same phase occures more than once (not in
+  include files) and also if a parameter appears several times (what
+  about include files?).  Constituents that are not entered as species
+  is an error.
+\item Bosse: added a suffix ``N'' complementary to ``D'' for model
+  codes like CEF5N when there are disordered fraction sets but when
+  when the Gibbs energy of the ordered part calculated as disordered
+  $G^{\rm ord}_M(y=x)$, should not be subtracted.  For example CEF5N
+  for the sigma phase.  The suffix ``D'' should be used when one
+  should add $\Delta G^{\rm ord}_M$ according to eq.~\ref{eq:deltag}.
+\item Changed ``element name'' to ``element symbol'' everywhere.
+\item Bosse: proposal to indicate independent variable in constituent
+  array for a binary parameter when using a polynom excess model as
+  SUBPK, see section~\ref{sec:excesspolynom}.
+\item Bosse: How can we add uncertainties to the model parameters?
 \end{itemize}
 
 \newpage
@@ -269,7 +283,7 @@ defined by the model index.  If there are sublattices it should be
 noted that $i$ and $j$ must belong to the same sublattice and there
 will be one additional summation in eq.  \ref{eq:excess} for each
 sublattice.  The composition dependence of $Z_{ij}$ is often expressed
-by a Redlich-Kister polynomial:
+by a Redlich-Kister polynom:
 \begin{equation}
 Z_{ij} = \sum_{\nu} (x_i - x_j)^{\nu} Z_{ij}^{\nu} \label{eq:rk}
 \end{equation}
@@ -580,7 +594,7 @@ constituent.
 \item The FUNCTION keyword can appear anywhere.
 \item The BIBLIOGRAPHY, DATABASE\_INFORMATION, 
   ASSESSED\_SYSTEMS, can appear anywhere but only once.
-\item The SPECIAL, INCLUDE\_FILE and DEFAULTS keyword can appear
+\item The SPECIAL, INCLUDE\_FILE and DEFAULT keyword can appear
   anywhere several times.
 \item The CHECKSUM keyword should be last if used.
 \end{itemize}
@@ -608,7 +622,7 @@ manager.
 
 Elements are those included in the periodic chart.  They are
 referenced by their chemical symbols, i.e.  their names are one or two
-letters long.  It is possible to have hypothetical element names e.g.
+letters long.  It is possible to have hypothetical element symbols e.g.
 A or Z.  A few extensions to the periodic chart are necessary.  Thus
 vacant sites on a sublattice are treated as a component and the name
 VA has been adopted.  At equilibrium the chemical potential of
@@ -629,12 +643,12 @@ difference in enthalpy between 298.15 and 0 K for the element in that
 same state will be given at the element keyword.
 
 \begin{verbatim}
-ELEMENT <element name> <SER state> <atomic mass>
+ELEMENT <element symbol> <SER state> <atomic mass>
     <enthalpy at 298.15 K - enthalpy at 0 K>
     <entropy  at 298.15 K> !
 \end{verbatim}
 
-The element name can be one or two characters.  Examples:
+The element symbol can be one or two characters.  Examples:
 
 \begin{verbatim}
 element fe bcc_a2                55.847  4489.0  27.280 !
@@ -685,11 +699,11 @@ positive charge, although the name od a species does not have to have
 any indication that it is charged.
 
 \begin{verbatim}
-SPECIES <species name> /<element name> <stoichiometric factor>/ !
+SPECIES <species name> /<element symbol> <stoichiometric factor>/ !
 \end{verbatim}
 
-There should be no space between the element name and stoichiometric
-factor.  Examples
+There should be no space between the element symbol and the
+stoichiometric factor.  Examples
 
 \begin{verbatim}
 species h2o		h2o1 !
@@ -723,7 +737,7 @@ match is required when species are used as constituents in model
 parameters.  A very long stoichiometric formula one can be given a
 short name.
 
-\subsection{Keyword TABLE\_OF\_MODELS}
+\subsection{Keyword TABLE\_OF\_MODELS}\label{sec:codes}
 
 There are 3 levels of codes that can be provided for a phase, the
 MODEL, any ADDITION and possibly some DETAIL.  At least a MODEL code
@@ -752,6 +766,7 @@ model I2SL   'ionic_liquid_two-sublattice model'
 model KFGL   "Kaphor-Frohberg-Gaye-Lehmann irsid slag model"  
 model CEFj   'Compound Energy Formalism with j sublattices'
 model CEFjD  'CEF with j sublattices and disordered part'
+model CEFjN  'CEF with j sublattices and disordered part, do not subtract ordered'
 model CEF4F  'CEF with 4 sublattices for FCC ordering and permutations'
 model CEF4B  'CEF with 4 sublattices for BCC ordering and permutations'
 model CEF5F  'CEF with 4 subl for FCC ordering, permutations and interstitials'
@@ -762,8 +777,8 @@ addition IMAGB  'Inden magnetic ordering model for BCC'
 addition IMAGF  'Inden magnetic ordering model for FCC and HCP'
 addition IWMAGB 'Inden-Wei magnetic ordering model for BCC'
 addition IWMAGF 'Inden-Wei magnetic ordering model for FCC and HCP'
-addition LOWTD  'Low T Debye model'
-addition LOWTE 'Low T Einstein model'
+addition DEBYE    'Low T Debye model'
+addition EINSTEIN 'Low T Einstein model'
 addition MURN   'Murnaghan pressure-volume model'
 detail MGAP  'Miscibility gap with major constituents specified'
 detail DCON  'Default major constituents specified in all sublattices'
@@ -807,7 +822,7 @@ case when the software should take care of model parameter
 permutations.  In a 4 sublattice ordered fcc phase a parameter like
 $~^{\circ}G_{\rm Al:Ni:Ni:Ni}$ has 4 permutations that should have
 identical values.  This is specified by the F.  The B means the same
-for the ordered bcc phase (which has s different set of permutations).
+for the ordered bcc phase (which has a different set of permutations).
 The 4 sublattice hcp phase has the same permutations as fcc.
 
 The letter D means that there is a separate set of model parameters
@@ -817,7 +832,7 @@ If there is an interstitial sublattice that is separate also in the
 disordered phase.
 
 \begin{verbatim}
-PHASE BCC_4SL CEF5FD(0.25 0.25 0.25 0.25 3) IMAG!
+PHASE BCC_4SL CEF5BD(0.25 0.25 0.25 0.25 3) IMAG!
 \end{verbatim}
 
 A software that does not handle permutations will have to expand these
@@ -896,11 +911,12 @@ solutions the phase is the central concept as data are stored
 primarily according to the phase it is associated with.
 
 \begin{verbatim}
-PHASE <phase name> /<model>/ /<addition>/ /<detail>/ !
+PHASE <phase name> <model> /<addition(s)>/ /<detail(s)>/ !
 \end{verbatim}
 
-The ``model'', ``addition'' and ``detail'' are explained below.  Some
-of them have additional information.
+The ``model'', ``addition'' and ``detail'' were briefly introduced in
+section~\ref{sec:codes} and are explained further in Appendix~C, D and
+E.
 
 Examples, note the text after ! are comments.
 
@@ -956,10 +972,11 @@ CONSTITUENT <phase name> : <species on first sublattice>
 \end{verbatim}
 
 This keyword must follow directly after the PHASE keyword but anyway
-the phase must be specified.  The number of sublattices with
-constituents must correspond to the specified for the phase keyword.
-Note that colon ``:'' are used between the sublattices and comma ``,''
-or a space between constituents in the same sublattice
+the phase must be specified directly after the keyword.  The number of
+sublattices with constituents must correspond to those specified in
+the phase keyword.  Note that colon ``:'' are used between the
+sublattices and comma ``,'' or a space between constituents in the
+same sublattice.
 
 Examples
 
@@ -1031,13 +1048,17 @@ letters and we should try to keep that limit.  But it is important to
 have unique identifiers!
 
 A special keyword should list all the parameter identifiers used in a
-database before the first parameter in the database.  All identifiers
-that may be used are listed in Appendix~F.
+database before the first parameter in the database.  A proposal for
+identifiers are listed in Appendix~F.
 \begin{verbatim}
 TABLE_OF_IDENTIFIERS /<identifier> {<explanation>}/ !
 \end{verbatim}
 
 The table is useful to check for typing errors at least.  
+
+Note that no parameter identifier should end with the letter D because
+a suffix D is used for parameters that belong to a disordered fraction
+set, see section~\ref{sec:suffixd}.
 
 It is important to establish a syntax for all identifiers as they may
 depend also on the constituents of the phase even if several of the
@@ -1118,7 +1139,8 @@ to 9.  If the parameter is a binary interaction parameter in a
 Redlich-Kister excess model the degree means the degree as a
 coefficient in a Redlich-Kister polynomial.  For other parameters and
 models the degree has different meanings.  In some cases the parameter
-depend on the order of the constituents as discussed in Appendix~G.
+depend on the order of the constituents as discussed in
+section~\ref{sec:subreg} and in Appendix~G.
 
 \subsubsection{The sign of the sub-regular parameter}\label{sec:subreg}
 
@@ -1133,8 +1155,9 @@ constituents are written in the constituent array.
 
 For example:\\ PARAMETER L(FCC,FE,CR;1) will by default be multiplied
 with $(x_{\rm Cr}-x_{\rm Fe})$\\ If the database manager wants it to
-be multiplied with $(x_{\rm Fe}-x_{\rm Cr})$\\ that must be specified in
-the DEFAULTS keyword.  Such a change will apply to the whole database.
+be multiplied with $(x_{\rm Fe}-x_{\rm Cr})$\\ that must be specified
+in the DEFAULT keyword.  Such a change will apply for all parameters
+that follow unless a new DEFAULT keyword changes it.
 
 \subsubsection{Wildcard constituents}
 
@@ -1146,12 +1169,43 @@ parameters which also have a specific constituent in that sublattice.
 Thus both the parameters
 
 \begin{verbatim}
-PARAMETER L(FCC,FE:*:VA) ...
-PARAMETER L(FCC,FE:C,VA) ...
+PARAMETER G(SIGMA,FE:*:FE) ...
+PARAMETER G(SIGMA,FE:CR:FE) ...
 \end{verbatim}
 
-should be included in a calculation of the Gibbs energy of the FCC
-phase for a system with C and Fe.
+should be included in a calculation of the Gibbs energy of the SIGMA
+phase for a system with Cr and Fe.
+
+For other properties, for example MQ\&X, it may be more appropiate to
+replace a parameter MQ\&FE(M23C6,*) by MQ\&FE(M23C6,W)
+
+The use of wildcards for interaction parameters is not supported.
+
+\subsubsection{The constituent array for binary parameter 
+in polynom models}\label{sec:excesspolynom}
+
+{\rm This is a new idea I have, I am not sure if it works}
+
+In a model using excess parameters described by a polymer in a single
+fraction variable, together with Kohler or Toop models, the fraction
+variable that should be the independent one should be indicated by
+a special character, for example an ampersand ``\&''.  If the LIQUID
+has the model SUBPK a set of binary excess parameters
+binary parameters
+
+\begin{verbatim}
+PARAMETER L(LIQUID,CR,FE&;0) ... !
+PARAMETER L(LIQUID,CR,FE&;1) ... !
+PARAMETER L(LIQUID,CR,FE&;4) ... !
+PARAMETER L(LIQUID,CR,FE&;5) ... !
+\end{verbatim}
+
+means the expression
+\begin{eqnarray}
+^EG_M(Cr,Fe) = x_{\rm Cr}x_{\rm Fe}(~^0L_{\rm Cr,Fe}+x_{\rm Fe}~^1L_{\rm Cr,Fe}+x_{\rm Fe}^4~^4L_{\rm Cr,Fe}+x_{\rm Fe}^5~^5L_{\rm Cr,Fe})
+\end{eqnarray}
+
+The Kohler ternary extrapolation model will be used.
 
 \subsubsection{Parameters for a disordered part}\label{sec:suffixd}
 
@@ -1161,13 +1215,15 @@ will have a suffix D on the parameter identifier in addition to have
 fewer sublattices.
 
 \begin{verbatim}
-PARAMETER G(FCC_4SL,AL:NI:NI:NI:VA) ...
-PARAMETER GD(FCC_4SL,NI:C,VA) ....
+PARAMETER G(FCC_4SL,AL:NI:NI:NI:VA) ... !
+PARAMETER GD(FCC_4SL,NI:C,VA) .... !
 \end{verbatim}
 where the first parameter is part of the ordered description of the
 FCC phase and the second is in the disordered part.  (In the TDB
 format the disordered part is a separate phase that is connected by a
 TYPE\_DEFINITION but that is a software dependent feature.)
+
+Note no parameter identifier should by itself end by a D.
 
 \subsubsection{The expression}
 
@@ -1355,6 +1411,8 @@ limits for the data.
 VERSION <date> <default low T limit> <default high T limit> !
 \end{verbatim}
 
+The data should be written yymmdd like 161023.
+
 \subsection{Keyword CHECKSUM}
 
 {\em The checksum was never been implemented in TDB, I think it would
@@ -1363,7 +1421,7 @@ VERSION <date> <default low T limit> <default high T limit> !
   keyword and ! after converting the text to upper case and removing
   the control characters as specified above.}
 
-\subsection{Keyword DEFAULTS}\label{sec:defaults}
+\subsection{Keyword DEFAULT}\label{sec:defaults}
 
 At present there is only one use for this keyword:\\
 
@@ -1630,14 +1688,223 @@ accuracy for the database.
 
 \section{Appendix A: Example of an interchange}
 
-On the following pages an example of the use of the interchange format
-is given in order to describe a database for ??.  
+On the following pages a few examples of the use of the interchange
+format in order to describe a database are listed.
 
-{\em new example needed}
+Example 1 for the Re-Mo binary database in PDB format.  Data provided
+by Nathalie Dupin.
+
+The database example is not complete as there are no TABLEs included
+but I think they should eventually be present because they are useful
+as a check for typing errors.
 
 {\small
 \begin{verbatim}
-to be generated ...
+
+ELEMENT /-  Electron_gas              0.0000E+00  0.0000E+00  0.0000E+00 !
+ELEMENT VA  Vaccum                    0.0000E+00  0.0000E+00  0.0000E+00 !
+ELEMENT MO  BCC_A2                    9.5940E+01  4.5890E+03  2.8560E+01 !
+ELEMENT RE  HCP_A3                    1.8621E+02  5.3555E+03  3.6526E+01 !
+
+$ =================
+
+FUNCTION RTLNP 10 8.31451*R*LN(1.0D-5*P); 20000 N !
+FUNCTION GHSERMO   298.15 -7746.302+131.9197*T-23.56414*T*LN(+T)
+        -.003443396*T**2+5.66283E-07*T**3+65812*T**(-1)-1.30927E-10*T**4; 
+        2896 Y -30556.41+283.559746*T-42.63829*T*LN(+T)-4.849315E+33*T**(-9); 
+        5000 N !
+FUNCTION GHSERRE   298.15 -7695.279+128.421589*T-24.348*T*LN(+T)
+        -.00253505*T**2+1.92818E-07*T**3+32915*T**(-1); 1200 Y -15775.998
+        +194.667426*T-33.586*T*LN(+T)+.00224565*T**2-2.81835E-07*T**3
+        +1376270*T**(-1); 2400 Y -70882.739+462.110749*T-67.956*T*LN(+T)
+        +.01184945*T**2-7.88955E-07*T**3+18075200*T**(-1); 3458 Y +346325.888
+        -1211.37186*T+140.831655*T*LN(+T)-.033764567*T**2+1.053726E-06*T**3
+        -134548866*T**(-1); 5000 Y -78564.296+346.997842*T-49.519*T*LN(+T); 
+        6000 N !
+FUNCTION EVTOJ   298.15 +96485.5547; 6000 N !
+FUNCTION GCHIRE   298.15 +G58CHIRE*UNS58; 6000 N !
+FUNCTION GCHIMO   298.15 +G58CHIMO*UNS58; 6000 N !
+FUNCTION GSIGRE   298.15 +G30SIGRE*UNS30; 6000 N !
+FUNCTION GSIGMO   298.15 +G30SIGMO*UNS30; 6000 N !
+FUNCTION GSERMO   298.15 -10.949432*EVTOJ; 6000 N !
+FUNCTION GSERRE   298.15 -12.4224915*EVTOJ; 6000 N !
+FUNCTION G58CHIMO   298.15 -619.36214*EVTOJ; 6000 N !
+FUNCTION UNS58   298.15 +CINQ8**(-1); 6000 N !
+FUNCTION G58CHIRE   298.15 -717.557146*EVTOJ; 6000 N !
+FUNCTION G30SIGMO   298.15 -323.477558*EVTOJ; 6000 N !
+FUNCTION UNS30   298.15 +TRENTE**(-1); 6000 N !
+FUNCTION G30SIGRE   298.15 -369.773611*EVTOJ; 6000 N !
+FUNCTION CINQ8   298.15 +58; 6000 N !
+FUNCTION TRENTE   298.15 +30; 6000 N !
+
+$ =================
+
+$ The proposed PDB format for model:  CEF2 means CEF model with 2 sublattices
+$ The site ratios inside the parenthesis
+$ IMAGB means Inden's BCC model for magnetic ordering, Neither Mo nor Re is
+$ magnetic.
+ PHASE BCC_A2 CEF2(  1.000   3.000 ) IMAGB !
+     CONSTITUENT BCC_A2 :MO RE: VA:!
+     PARAMETER G(BCC_A2,MO:VA;0)  298.15 +GHSERMO; 5000 N REF1 !
+     PARAMETER G(BCC_A2,RE:VA;0)  298.15 +9304.721+124.721589*T
+            -24.348*T*LN(+T)-.00253505*T**2+1.92818E-07*T**3+32915*T**(-1); 
+            1200 Y +1224.002+190.967426*T-33.586*T*LN(+T)+.00224565*T**2
+            -2.81835E-07*T**3+1376270*T**(-1); 2400 Y -53882.739+458.410749*T
+            -67.956*T*LN(+T)+.01184945*T**2-7.88955E-07*T**3+18075200*T**(-1);
+             3458 Y +363325.888-1215.07186*T+140.831655*T*LN(+T)
+            -.033764567*T**2+1.053726E-06*T**3-134548866*T**(-1); 5000 Y 
+            -61564.296+343.297842*T-49.519*T*LN(+T); 6000 N REF1 !
+    PARAMETER G(BCC_A2,MO,RE:VA;0)  298.15 -15025+11.404*T; 6000 N RM2013 !
+    PARAMETER G(BCC_A2,MO,RE:VA;1)  298.15 +8.07*T; 6000 N RM2013 !
+
+$ The N in CEF4N means a disordered contribution. All sublattices are added
+$ together for the disordered part and the ordered part as disordered
+$ is not subtracted.
+ PHASE CHI CEF4N(  2.000   8.000  24.000  24.000 ) !
+     CONSTITUENT CHI :MO RE: MO RE: MO RE: MO RE:!
+     PARAMETER G(CHI,MO:MO:MO:RE;0)  298.15 -667.0576*EVTOJ-2*GCHIMO-8*GCHIMO
+            -24*GCHIMO-24*GCHIRE; 6000 N DFTCHI !
+     PARAMETER G(CHI,MO:MO:RE:MO;0)  298.15 -662.013824*EVTOJ-2*GCHIMO
+            -8*GCHIMO-24*GCHIRE-24*GCHIMO; 6000 N DFTCHI !
+     PARAMETER G(CHI,MO:MO:RE:RE;0)  298.15 -706.53129*EVTOJ-2*GCHIMO
+            -8*GCHIMO-24*GCHIRE-24*GCHIRE; 6000 N DFTCHI !
+     PARAMETER G(CHI,MO:RE:MO:MO;0)  298.15 -630.436204*EVTOJ-2*GCHIMO
+            -8*GCHIRE-24*GCHIMO-24*GCHIMO; 6000 N DFTCHI !
+     PARAMETER G(CHI,MO:RE:MO:RE;0)  298.15 -676.652914*EVTOJ-2*GCHIMO
+            -8*GCHIRE-24*GCHIMO-24*GCHIRE; 6000 N DFTCHI !
+     PARAMETER G(CHI,MO:RE:RE:MO;0)  298.15 -672.07236*EVTOJ-2*GCHIMO
+            -8*GCHIRE-24*GCHIRE-24*GCHIMO; 6000 N DFTCHI !
+     PARAMETER G(CHI,MO:RE:RE:RE;0)  298.15 -715.47601*EVTOJ-2*GCHIMO
+            -8*GCHIRE-24*GCHIRE-24*GCHIRE; 6000 N DFTCHI !
+     PARAMETER G(CHI,RE:MO:MO:MO;0)  298.15 -621.992644*EVTOJ
+            -2*GCHIRE-8*GCHIMO-24*GCHIMO-24*GCHIMO; 6000 N DFTCHI !
+     PARAMETER G(CHI,RE:MO:MO:RE;0)  298.15 -669.426922*EVTOJ
+            -2*GCHIRE-8*GCHIMO-24*GCHIMO-24*GCHIRE; 6000 N DFTCHI !
+     PARAMETER G(CHI,RE:MO:RE:MO;0)  298.15 -664.700708*EVTOJ
+            -2*GCHIRE-8*GCHIMO-24*GCHIRE-24*GCHIMO; 6000 N DFTCHI !
+     PARAMETER G(CHI,RE:MO:RE:RE;0)  298.15 -708.864342*EVTOJ
+            -2*GCHIRE-8*GCHIMO-24*GCHIRE-24*GCHIRE; 6000 N DFTCHI !
+     PARAMETER G(CHI,RE:RE:MO:MO;0)  298.15 -632.902352*EVTOJ
+            -2*GCHIRE-8*GCHIRE-24*GCHIMO-24*GCHIMO; 6000 N DFTCHI !
+     PARAMETER G(CHI,RE:RE:MO:RE;0)  298.15 -678.636738*EVTOJ
+            -2*GCHIRE-8*GCHIRE-24*GCHIMO-24*GCHIRE; 6000 N DFTCHI !
+     PARAMETER G(CHI,RE:RE:RE:MO;0)  298.15 -674.442674*EVTOJ
+            -2*GCHIRE-8*GCHIRE-24*GCHIRE-24*GCHIMO; 6000 N DFTCHI !
+$ Disordered fraction parameters:--------------------
+     PARAMETER GD(CHI,MO;0)  298.15 +GCHIMO-GSERMO+GHSERMO-0.5596*T; 6000 N 
+            RM2013 !
+     PARAMETER GD(CHI,RE;0)  298.15 +GCHIRE-GSERRE+GHSERRE+.0905*T; 6000 N 
+            RM2013 !
+
+$ Nothing special here.  IMAGF is Inden's magnetic model for FCC/HCP.
+ PHASE HCP_A3 CEF2( 1.000   0.500 ) IMAGF !
+     CONSTITUENT HCP_A3 :MO RE: VA:!
+     PARAMETER G(HCP_A3,MO:VA;0)  298.15 +3803.698+131.9197*T
+            -23.56414*T*LN(+T)-.003443396*T**2+5.66283E-07*T**3+65812*T**(-1)
+            -1.30927E-10*T**4; 2896 Y -19006.41+283.559746*T
+            -42.63829*T*LN(+T)-4.849315E+33*T**(-9); 5000 N REF1 !
+     PARAMETER G(HCP_A3,RE:VA;0)  298.15 +GHSERRE; 6000 N REF1 !
+    PARAMETER G(HCP_A3,MO,RE:VA;0)  298.15 +12740+1.95*T; 6000 N RM2013 !
+
+$ The model SUBRKM means substitution model with Redlich-Kister binary excess
+$ and_Muggianu ternary extrapolation.
+ PHASE LIQUID SUBRKM !
+     CONSTITUENT LIQUID :MO RE:!
+     PARAMETER G(LIQUID,MO;0)  298.15 +34085.045+117.224788*T
+            -23.56414*T*LN(+T)-.003443396*T**2+5.66283E-07*T**3+65812*T**(-1)
+            -1.30927E-10*T**4+4.24519E-22*T**7; 2896 Y +3538.963+271.6697*T
+            -42.63829*T*LN(+T); 5000 N REF1 !
+     PARAMETER G(LIQUID,RE;0)  298.15 +16125.604+122.076209*T-24.348*T*LN(+T)
+            -.00253505*T**2+1.92818E-07*T**3+32915*T**(-1); 1200 Y +8044.885
+            +188.322047*T-33.586*T*LN(+T)+.00224565*T**2-2.81835E-07*T**3
+            +1376270*T**(-1); 2000 Y +568842.665-2527.83846*T
+            +314.178898*T*LN(+T)-.08939817*T**2+3.92854E-06*T**3
+            -163100987*T**(-1); 3458 Y -39044.888+335.723691*T
+            -49.519*T*LN(+T); 6000 N REF1 !
+    PARAMETER G(LIQUID,MO,RE;0)  298.15 -15025+11.404*T-2610; 6000 N RM2013 !
+    PARAMETER G(LIQUID,MO,RE;1)  298.15 +8.07*T-7790; 6000 N RM2013 !
+
+$ This model is the same as for the CHI_PHASE but with 5 sublattices
+ PHASE SIGMA CEF5N( 2.000   4.000   8.000   8.000   8.000) !
+     CONSTITUENT SIGMA :MO RE: MO RE: MO RE: MO RE: MO RE:!
+     PARAMETER G(SIGMA,MO:MO:MO:MO:RE;0)  298.15 -336.420911*EVTOJ-2*GSIGMO
+            -4*GSIGMO-8*GSIGMO-8*GSIGMO-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,MO:MO:MO:RE:MO;0)  298.15 -338.810302*EVTOJ-2*GSIGMO
+            -4*GSIGMO-8*GSIGMO-8*GSIGRE-8*GSIGMO; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,MO:MO:MO:RE:RE;0)  298.15 -350.940389*EVTOJ-2*GSIGMO
+            -4*GSIGMO-8*GSIGMO-8*GSIGRE-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,MO:MO:RE:MO:MO;0)  298.15 -336.272469*EVTOJ-2*GSIGMO
+            -4*GSIGMO-8*GSIGRE-8*GSIGMO-8*GSIGMO; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,MO:MO:RE:MO:RE;0)  298.15 -348.274113*EVTOJ-2*GSIGMO
+            -4*GSIGMO-8*GSIGRE-8*GSIGMO-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,MO:MO:RE:RE:MO;0)  298.15 -350.877403*EVTOJ-2*GSIGMO
+            -4*GSIGMO-8*GSIGRE-8*GSIGRE-8*GSIGMO; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,MO:MO:RE:RE:RE;0)  298.15 -361.705173*EVTOJ-2*GSIGMO
+            -4*GSIGMO-8*GSIGRE-8*GSIGRE-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,MO:RE:MO:MO:MO;0)  298.15 -329.386161*EVTOJ-2*GSIGMO
+            -4*GSIGRE-8*GSIGMO-8*GSIGMO-8*GSIGMO; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,MO:RE:MO:MO:RE;0)  298.15 -341.899815*EVTOJ-2*GSIGMO
+            -4*GSIGRE-8*GSIGMO-8*GSIGMO-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,MO:RE:MO:RE:MO;0)  298.15 -344.381107*EVTOJ-2*GSIGMO
+            -4*GSIGRE-8*GSIGMO-8*GSIGRE-8*GSIGMO; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,MO:RE:MO:RE:RE;0)  298.15 -355.892909*EVTOJ-2*GSIGMO
+            -4*GSIGRE-8*GSIGMO-8*GSIGRE-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,MO:RE:RE:MO:MO;0)  298.15 -342.25167*EVTOJ-2*GSIGMO
+            -4*GSIGRE-8*GSIGRE-8*GSIGMO-8*GSIGMO; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,MO:RE:RE:MO:RE;0)  298.15 -353.543856*EVTOJ-2*GSIGMO
+            -4*GSIGRE-8*GSIGRE-8*GSIGMO-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,MO:RE:RE:RE:MO;0)  298.15 -356.308695*EVTOJ-2*GSIGMO
+            -4*GSIGRE-8*GSIGRE-8*GSIGRE-8*GSIGMO; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,MO:RE:RE:RE:RE;0)  298.15 -366.47672*EVTOJ-2*GSIGMO
+            -4*GSIGRE-8*GSIGRE-8*GSIGRE-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:MO:MO:MO:MO;0)  298.15 -327.229897*EVTOJ
+            -2*GSIGRE-4*GSIGMO-8*GSIGMO-8*GSIGMO-8*GSIGMO; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:MO:MO:MO:RE;0)  298.15 -340.042158*EVTOJ
+            -2*GSIGRE-4*GSIGMO-8*GSIGMO-8*GSIGMO-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:MO:MO:RE:MO;0)  298.15 -342.644194*EVTOJ
+            -2*GSIGRE-4*GSIGMO-8*GSIGMO-8*GSIGRE-8*GSIGMO; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:MO:MO:RE:RE;0)  298.15 -354.494334*EVTOJ
+            -2*GSIGRE-4*GSIGMO-8*GSIGMO-8*GSIGRE-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:MO:RE:MO:MO;0)  298.15 -340.103152*EVTOJ
+            -2*GSIGRE-4*GSIGMO-8*GSIGRE-8*GSIGMO-8*GSIGMO; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:MO:RE:MO:RE;0)  298.15 -351.792339*EVTOJ
+            -2*GSIGRE-4*GSIGMO-8*GSIGRE-8*GSIGMO-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:MO:RE:RE:MO;0)  298.15 -354.690887*EVTOJ
+            -2*GSIGRE-4*GSIGMO-8*GSIGRE-8*GSIGRE-8*GSIGMO; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:MO:RE:RE:RE;0)  298.15 -365.120645*EVTOJ
+            -2*GSIGRE-4*GSIGMO-8*GSIGRE-8*GSIGRE-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:RE:MO:MO:MO;0)  298.15 -332.95143*EVTOJ
+            -2*GSIGRE-4*GSIGRE-8*GSIGMO-8*GSIGMO-8*GSIGMO; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:RE:MO:MO:RE;0)  298.15 -345.245205*EVTOJ
+            -2*GSIGRE-4*GSIGRE-8*GSIGMO-8*GSIGMO-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:RE:MO:RE:MO;0)  298.15 -347.970121*EVTOJ
+            -2*GSIGRE-4*GSIGRE-8*GSIGMO-8*GSIGRE-8*GSIGMO; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:RE:MO:RE:RE;0)  298.15 -359.220781*EVTOJ
+            -2*GSIGRE-4*GSIGRE-8*GSIGMO-8*GSIGRE-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:RE:RE:MO:MO;0)  298.15 -345.809448*EVTOJ
+            -2*GSIGRE-4*GSIGRE-8*GSIGRE-8*GSIGMO-8*GSIGMO; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:RE:RE:MO:RE;0)  298.15 -356.822818*EVTOJ
+            -2*GSIGRE-4*GSIGRE-8*GSIGRE-8*GSIGMO-8*GSIGRE; 6000 N DFTSIG !
+     PARAMETER G(SIGMA,RE:RE:RE:RE:MO;0)  298.15 -359.887484*EVTOJ
+            -2*GSIGRE-4*GSIGRE-8*GSIGRE-8*GSIGRE-8*GSIGMO; 6000 N DFTSIG !
+$ Disordered fraction parameters:--------------------
+     PARAMETER GD(SIGMA,MO;0)  298.15 +GSIGMO-GSERMO+GHSERMO+1.251*T; 6000 N 
+            RM2013 !
+     PARAMETER GD(SIGMA,RE;0)  298.15 +GSIGRE-GSERRE+GHSERRE-1.205*T; 6000 N 
+            RM2013 !
+
+$ =================
+
+
+BIBLIOGRAPHY
+DUMMY           'OC BUG not reading first line ...'
+REF1            'PURE4 - SGTE Pure Elements (Unary) Database (Version 4.6), 
+                 developed by SGTE (Scientific Group Thermodata Europe), 1991
+                 -2008, and provided by TCSAB (Jan. 2008).'
+DFTCHI          'JC Crivello 2012 march, Armide project v1.13 chi phase'
+RM2013          '*** Not set by database or user'
+DFTSIG          'JC Crivello 2012 march, Armide project v1.9 sigma phase'
+!
 \end{verbatim}
 }
 
@@ -1648,11 +1915,11 @@ to be generated ...
 \begin{verbatim}
 VERSION <date> <lower T limit> <upper T limit>!
 
-ELEMENT <element name> <SER state> <atomic mass in g/mol>
+ELEMENT <element symbol> <SER state> <atomic mass in g/mol>
     <enthalpy at 298.15 K - enthalpy at 0 K>
     <entropy  at 298.15 K> !
 
-SPECIES <species name> /<element name> <stoichiometric factor>/ !
+SPECIES <species name> /<element symbol> <stoichiometric factor>/ !
 
 TABLE_OF_MODELS /<code> '<explanation>'/!
 
@@ -1674,7 +1941,7 @@ BIBLIOGRAPHY /<bibligraphic identifier> '<text>'/ !
 
 SPECIAL <software> <any text and keywords including single !> !!
 
-DEFAULTS /option=value/ !
+DEFAULT /option=value/ !
 
 ASSESSED_SYSTEMS assessed systems with a hyphen between the elements in
      alphabetical order. !
@@ -1698,19 +1965,19 @@ SUBRKM & Substitutional model with Redlich-Kister Mugianu (RKM) excess model\\
 SUBPK  & Substitutional model with polynom model and Kohler extrapolation\\
 SUBMIX & Substitutional model with mixed excess model\\
 CEFj   & Sublattice model with j sublattices, $1\leq j\leq 9$, RKM excess model\\
-CEFjD & as CEFj but also a disordered substitutional model added, RKM excess\\
+CEFjD & as CEFj but also a disordered substitutional model added, without configurational entropy, RKM excess, ordered part subtracted calculated as disordered.\\
+CEFjN & as CEFj but also a disordered substitutional model added without configurational entropy, RKM excess, the ordered part not subtracted.\\
 CEF4F & A 4 sublattice model for ordered fcc or hcp with permutated parameters only once, RKM excess\\
 CEF4B & A 4 sublattice model for ordered bcc with permutated parameters only once, RKM excess\\
 CEF5F & A 4 sublattice model for ordered fcc or hcp with extra interstitial sublattice
 and permutated parameters only once, RKM excess\\
 CEF5B & A 4 sublattice model for ordered bcc with extra interstitial sublattice
 and permutated parameters only once, RKM excess\\
-CEF5FD & A 4 sublattice model for ordered fcc or hcp with extra interstitial sublattice
-and permutated parameters only once and a disordered substitutional model for
-the ordered sublattices, RKM excess\\
+CEF5FD & A 4 sublattice model for ordered fcc or hcp with extra interstitial sublattice and permutated parameters only once and a disordered substitutional model for the ordered sublattices, the ordered part subtracted as disordered, 
+RKM excess\\
 CEF5BD & A 4 sublattice model for ordered bcc with extra interstitial sublattice
 and permutated parameters only once and a disordered substitutional model for
-the ordered sublattices, RKM excess\\
+the ordered sublattices, the ordered part subtracted as disordered, RKM excess\\
 I2SL & The 2 sublattice ionic liquid model.\\\hline
 \end{tabular}
 
@@ -1920,12 +2187,38 @@ $y_{i}$ or $y_{is}$ & the constituent fraction of $i$ (on sublattice $s$).\\\hli
   The configurational entropy of the substitutional part is
   ignored.
   \begin{eqnarray}
-    G_M &=& G_M^{\rm ord}(y) + G_M^{\rm dis}(x) - RT\sum_i x_i\ln(x_i)
+    G_M &=& G_M^{\rm dis}(x) + \Delta G^{\rm ord}\\
+    \Delta G_M^{\rm ord}(y) &=& G_M^{\rm ord}(y) - G_M^{\rm ord}(y=x) \label{eq:deltag}
   \end{eqnarray}
+
+  Note that the configurational entropy for the disordered part will
+  cancelled when adding $\Delta G_M^{\rm ord}(y=x)$
 
   Example:
 
-  PHASE SIGMA CEF5D(2.0 4.0 8.0 8.0 8.0) !
+  PHASE BCC\_2SL CEF3D(0.5 0.5 3) !
+  
+%---------------------------------------------------
+\item model code CEFjN\label{sc:cefjn}
+
+  The constituents can be any kind of species, including vacancies and
+  ions.
+
+  This adds a disordered substitutional part to a phase modeled with j
+  sublattices, $1\leq j \leq 9$, for example $\sigma$ or Laves\_C14.
+  The configurational entropy of the substitutional part is
+  ignored.
+  \begin{eqnarray}
+    G_M &=& G_M^{\rm ord}(y) + G_M^{\rm dis}(x) - RT\sum_i x_i\ln(x_i)
+  \end{eqnarray}
+
+  As the ordered part will be calculated only for $y$ the
+  configurational entropy for the disordered part must be subtracted
+  explicitly.
+
+  Example:
+
+  PHASE SIGMA CEF5N(2.0 4.0 8.0 8.0 8.0) !
   
 %---------------------------------------------------
 \item model code CEF4F and CEF4B 
@@ -2094,7 +2387,7 @@ PHASE HALITE CEF2(1.0 1.0) IMAGF DETAIL(STRUCT(B2, PERICLASE)) !
   major constituents in all sublattices and possibly a pre and suffix
   to the phase name.
 \begin{verbatim}
-DETAIL(prefix : /major constituent in sublattice :/ suffix)
+DETAIL(prefix : /major constituent(s) in sublattice :/ suffix)
 \end{verbatim}
 
   PHASE FCC\_A1 CEF2( 1.0 1.0) IMAGF MGAP(MC :TI V:C N : CARB) !
@@ -2120,10 +2413,12 @@ DETAIL(prefix : /major constituent in sublattice :/ suffix)
   This can be used to specify default constituents (used for the first
   composition set).  For example
 
-  PHASE FCC\_A1 CEF2( 1.0 1.0) MAGIF MGAP(CC :Ti V:C N:) DCON(FE NI:VA) !
+  PHASE FCC\_A1 CEF2( 1.0 1.0) MAGIF MGAP(CC :Ti V:C N:) DCON(*:VA) !
 
-  This may be used instead of the \% used for major constituents in
-  the current TDB format, see section~\ref{sec:phaserange}.
+  The asterisk, ``*'', used in the DCON means there are no major
+  constituents in the first sublattice.  The DCON code may be used
+  instead of the \% for major constituents in the current TDB format,
+  see section~\ref{sec:phaserange}.
 
 \end{itemize}
 
@@ -2169,7 +2464,8 @@ VB    & - & m2/N & * & * &Bulk modulus\\\hline
 
 \bigskip
 
-A parameter can have a suffix D if it belongs to a disordered part.
+One should not have any indentifiers ending with D as a parameter
+identifier can have a suffix D if it belongs to a disordered part.
 Such a parameter will also have fewer sublattices in the constituent
 array.
 
